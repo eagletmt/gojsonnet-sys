@@ -3,6 +3,19 @@ name = "gojsonnet-sys"
 version = "0.17.0"
 authors = ["Kohei Suzuki <eagletmt@gmail.com>"]
 edition = "2018"
+description = "Binding for google/go-jsonnet"
+license = "MIT"
+repository = "https://github.com/eagletmt/gojsonnet-sys"
+include = [
+  "Cargo.toml",
+  "build.rs",
+  "src/lib.rs",
+  "vendor/go-jsonnet/go.mod",
+  "vendor/go-jsonnet/go.sum",
+  "vendor/go-jsonnet/**/*.go",
+  "vendor/go-jsonnet/c-bindings/*",
+  "vendor/go-jsonnet/cpp-jsonnet/include/*.h",
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
