@@ -10,10 +10,12 @@ include = [
   "Cargo.toml",
   "build.rs",
   "src/lib.rs",
+  "vendor/go-jsonnet/LICENSE",
   "vendor/go-jsonnet/go.mod",
   "vendor/go-jsonnet/go.sum",
   "vendor/go-jsonnet/**/*.go",
   "vendor/go-jsonnet/c-bindings/*",
+  "vendor/go-jsonnet/cpp-jsonnet/LICENSE",
   "vendor/go-jsonnet/cpp-jsonnet/include/*.h",
 ]
 
