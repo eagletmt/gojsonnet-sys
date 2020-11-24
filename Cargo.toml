@@ -1,6 +1,6 @@
 [package]
 name = "gojsonnet-sys"
-version = "0.17.0+p1"
+version = "1.0.0-alpha.1+0.17.0-57e6137"
 authors = ["Kohei Suzuki <eagletmt@gmail.com>"]
 edition = "2018"
 description = "Binding for google/go-jsonnet"
