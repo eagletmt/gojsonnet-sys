@@ -4,9 +4,14 @@ fn main() {
     println!("cargo:rerun-if-changed={}", c_bindings);
     println!("cargo:rustc-link-lib=static=gojsonnet");
     println!("cargo:rustc-link-search=native={}", out_dir.display());
-    let status = std::process::Command::new("go")
+    let mut cmd = std::process::Command::new("go");
+    if std::env::var("DOCS_RS").is_ok() {
+        cmd.env("XDG_CACHE_HOME", "/tmp/.cache");
+    }
+    let status = cmd
         .current_dir(c_bindings)
         .arg("build")
+        .arg("-mod=vendor")
         .arg("-buildmode=c-archive")
         .arg(format!("-o={}/libgojsonnet.a", out_dir.display()))
         .status()
