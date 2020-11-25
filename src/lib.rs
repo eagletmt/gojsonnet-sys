@@ -9,7 +9,7 @@ extern "C" {
         vm: *mut JsonnetVm,
         str_: *mut std::os::raw::c_char,
         sz: size_t,
-    ) -> ::std::os::raw::c_int;
+    ) -> *mut std::os::raw::c_char;
 }
 
 #[cfg(test)]
