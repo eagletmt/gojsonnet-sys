@@ -19,15 +19,10 @@ fn main() {
     if !status.success() {
         panic!("Failed to build libgojsonnet.a");
     }
-    std::fs::copy(
-        "vendor/go-jsonnet/c-bindings/internal.h",
-        out_dir.join("internal.h"),
-    )
-    .expect("Unable to copy internal.h");
     println!("cargo:rustc-link-lib=stdc++");
 
     let bindings = bindgen::Builder::default()
-        .header(out_dir.join("libgojsonnet.h").to_str().unwrap())
+        .header("vendor/go-jsonnet/cpp-jsonnet/include/libjsonnet.h")
         .generate()
         .expect("Unable to generate bindings");
     bindings

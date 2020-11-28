@@ -3,15 +3,6 @@
 #![allow(non_snake_case)]
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
-extern "C" {
-    // Declare functions defined in libjsonnet.cpp helper, not in c-bindings.go
-    pub fn jsonnet_realloc(
-        vm: *mut JsonnetVm,
-        str_: *mut std::os::raw::c_char,
-        sz: size_t,
-    ) -> *mut std::os::raw::c_char;
-}
-
 #[cfg(test)]
 mod tests {
     #[test]
@@ -22,16 +13,13 @@ mod tests {
 
     #[test]
     fn evaluate_snippet() {
-        let filename = std::ffi::CString::new("evaluate_snippet.jsonnet")
-            .unwrap()
-            .into_raw();
-        let code = std::ffi::CString::new("{foo: 1+2, bar: std.isBoolean(false)}")
-            .unwrap()
-            .into_raw();
+        let filename = std::ffi::CString::new("evaluate_snippet.jsonnet").unwrap();
+        let code = std::ffi::CString::new("{foo: 1+2, bar: std.isBoolean(false)}").unwrap();
         let result = unsafe {
             let vm = super::jsonnet_make();
             let mut err = 0;
-            let result_ptr = super::jsonnet_evaluate_snippet(vm, filename, code, &mut err);
+            let result_ptr =
+                super::jsonnet_evaluate_snippet(vm, filename.as_ptr(), code.as_ptr(), &mut err);
             let result = std::ffi::CStr::from_ptr(result_ptr)
                 .to_string_lossy()
                 .into_owned();
@@ -55,14 +43,13 @@ mod tests {
 
     #[test]
     fn evaluate_snippet_syntax_error() {
-        let filename = std::ffi::CString::new("evaluate_snippet.jsonnet")
-            .unwrap()
-            .into_raw();
-        let code = std::ffi::CString::new("{foo: 1+}").unwrap().into_raw();
+        let filename = std::ffi::CString::new("evaluate_snippet.jsonnet").unwrap();
+        let code = std::ffi::CString::new("{foo: 1+}").unwrap();
         let result = unsafe {
             let vm = super::jsonnet_make();
             let mut err = 0;
-            let result_ptr = super::jsonnet_evaluate_snippet(vm, filename, code, &mut err);
+            let result_ptr =
+                super::jsonnet_evaluate_snippet(vm, filename.as_ptr(), code.as_ptr(), &mut err);
             let result = std::ffi::CStr::from_ptr(result_ptr)
                 .to_string_lossy()
                 .into_owned();
@@ -82,18 +69,15 @@ mod tests {
 
     #[test]
     fn native_callback() {
-        let filename = std::ffi::CString::new("native_callback.jsonnet")
-            .unwrap()
-            .into_raw();
+        let filename = std::ffi::CString::new("native_callback.jsonnet").unwrap();
         let code = std::ffi::CString::new(
             r#"
             local hello = std.native("hello");
             { message: hello("world") }
         "#,
         )
-        .unwrap()
-        .into_raw();
-        let name = std::ffi::CString::new("hello").unwrap().into_raw();
+        .unwrap();
+        let name = std::ffi::CString::new("hello").unwrap();
         unsafe extern "C" fn callback(
             ctx: *mut std::ffi::c_void,
             argv: *const *const super::JsonnetJsonValue,
@@ -103,30 +87,25 @@ mod tests {
             let arg_c =
                 super::jsonnet_json_extract_string(vm, *argv as *mut super::JsonnetJsonValue);
             let arg = std::ffi::CStr::from_ptr(arg_c).to_str().unwrap();
-            let s = super::jsonnet_json_make_string(
-                vm,
-                std::ffi::CString::new(format!("hello {}", arg))
-                    .unwrap()
-                    .into_raw(),
-            );
+            let message = std::ffi::CString::new(format!("hello {}", arg)).unwrap();
+            let s = super::jsonnet_json_make_string(vm, message.as_ptr());
             *success = 1;
             s
         }
-        let mut params = vec![
-            std::ffi::CString::new("s").unwrap().into_raw(),
-            std::ptr::null_mut(),
-        ];
+        let arg = std::ffi::CString::new("s").unwrap();
+        let params = vec![arg.as_ptr(), std::ptr::null()];
         let result = unsafe {
             let vm = super::jsonnet_make();
             super::jsonnet_native_callback(
                 vm,
-                name,
+                name.as_ptr(),
                 Some(callback),
                 vm as *mut std::ffi::c_void,
-                params.as_mut_ptr(),
+                params.as_ptr(),
             );
             let mut err = 0;
-            let result_ptr = super::jsonnet_evaluate_snippet(vm, filename, code, &mut err);
+            let result_ptr =
+                super::jsonnet_evaluate_snippet(vm, filename.as_ptr(), code.as_ptr(), &mut err);
             let result = std::ffi::CStr::from_ptr(result_ptr)
                 .to_string_lossy()
                 .into_owned();
