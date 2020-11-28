@@ -23,6 +23,7 @@ fn main() {
 
     let bindings = bindgen::Builder::default()
         .header("vendor/go-jsonnet/cpp-jsonnet/include/libjsonnet.h")
+        .header("vendor/go-jsonnet/cpp-jsonnet/include/libjsonnet_fmt.h")
         .generate()
         .expect("Unable to generate bindings");
     bindings

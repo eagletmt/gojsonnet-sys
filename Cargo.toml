@@ -1,6 +1,6 @@
 [package]
 name = "gojsonnet-sys"
-version = "1.0.0-alpha.2+0.17.0-57e6137"
+version = "1.0.0-alpha.3+0.17.0-35acb29"
 authors = ["Kohei Suzuki <eagletmt@gmail.com>"]
 edition = "2018"
 description = "Binding for google/go-jsonnet"
@@ -16,6 +16,7 @@ include = [
   "vendor/go-jsonnet/**/*.go",
   "vendor/go-jsonnet/c-bindings/*",
   "vendor/go-jsonnet/cpp-jsonnet/include/libjsonnet.h",
+  "vendor/go-jsonnet/cpp-jsonnet/include/libjsonnet_fmt.h",
 ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
