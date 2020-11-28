@@ -8,7 +8,16 @@ mod tests {
     #[test]
     fn library_version() {
         let cstr = unsafe { std::ffi::CStr::from_ptr(super::jsonnet_version()) };
-        assert_eq!(cstr.to_str().unwrap(), "v0.17.0 (go-jsonnet)");
+        assert_eq!(
+            cstr.to_str().unwrap(),
+            format!(
+                "{} (go-jsonnet)",
+                std::ffi::CStr::from_bytes_with_nul(super::LIB_JSONNET_VERSION)
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+            ),
+        );
     }
 
     #[test]
